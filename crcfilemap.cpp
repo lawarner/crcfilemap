@@ -1,6 +1,7 @@
 
 #include "dirhandler.h"
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <stddef.h>
 #include <stdint.h>
@@ -45,15 +46,20 @@ int main(int argc, char* argv[]) {
     if (argc > 1) {
         path = argv[1];
     }
-    cout << "Scanning " << path << " for dups" << endl;
+    //cout << "Scanning " << path << " for dups" << endl;
     DirHandler dirhand(path);
     auto root = dirhand.getRoot();
-    cout << "Root element:\n" << root << endl;
+    //cout << "Root element:\n" << root << endl;
     size_t numFiles = dirhand.walkDirectory([](DirElement& element) {
-            uint32_t crc = calcCrc(element);
-            cout << "CRC 0x" << std::hex << crc << "  " << element.getPath() << endl;
+            if (element.getAttributes().kind() == Attributes::File &&
+                element.getAttributes().fileSize() > 0) {
+                uint32_t crc = calcCrc(element);
+                cout << "CRC " << std::hex << std::setfill('0') << std::setw(8) << crc << " sz "
+                     << std::dec << element.getAttributes().fileSize()
+                     << " " << element.getPath() << endl;
+            }
             return true;
         }, true);
-    cout << "scanned " << numFiles << " files." << endl;
+    //cout << "scanned " << numFiles << " files." << endl;
     return 0;
 }

@@ -49,11 +49,11 @@ size_t DirHandler::walkDirectory(DirVisitor visitor, bool recursive) {
         ++visited;
         if (element.getAttributes().kind() == Attributes::Directory) {
             if (recursive) {
-                cout << "Recurse into " << element.getPath() << endl;
+                //cout << "Recurse into " << element.getPath() << endl;
                 DirHandler dh(element.getPath());
                 visited += dh.walkDirectory(visitor, recursive);
             } else {
-                cout << "Skipping dir " << element.getPath() << endl;
+                //cout << "Skipping dir " << element.getPath() << endl;
             }
         } else {
             if (!visitor(element)) {
