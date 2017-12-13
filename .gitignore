@@ -1,4 +1,6 @@
 *.o
 *~
 
+.makedepends
+.mkdep-timestamp
 crcfilemap

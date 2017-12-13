@@ -8,6 +8,10 @@
 
 DirHandler::DirHandler(const std::string& rootPath)
     : root_(rootPath) {
+    matcher_.addMatch(".git");
+    matcher_.addMatch("iTunes");
+    matcher_.addMatch("Photos Library.photoslibrary");
+    matcher_.addMatch("en_visual_studio_professional_2013_x86_dvd_3175298.iso");
     refresh();
 }
 
@@ -33,7 +37,7 @@ bool DirHandler::refresh() {
     struct dirent* de = readdir(dir);
     while (de) {
         std::string name(de->d_name);
-        if (name != "." && name != "..") {
+        if (name != "." && name != ".." && !matcher_.matches(name)) {
             DirElement dirElem(root_, de->d_name);
             elements_.push_back(dirElem);
         }

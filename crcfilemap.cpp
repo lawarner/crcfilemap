@@ -49,17 +49,20 @@ int main(int argc, char* argv[]) {
     //cout << "Scanning " << path << " for dups" << endl;
     DirHandler dirhand(path);
     auto root = dirhand.getRoot();
+    
     //cout << "Root element:\n" << root << endl;
     size_t numFiles = dirhand.walkDirectory([](DirElement& element) {
-            if (element.getAttributes().kind() == Attributes::File &&
-                element.getAttributes().fileSize() > 0) {
-                uint32_t crc = calcCrc(element);
-                cout << "CRC " << std::hex << std::setfill('0') << std::setw(8) << crc << " sz "
-                     << std::dec << element.getAttributes().fileSize()
-                     << " " << element.getPath() << endl;
-            }
-            return true;
-        }, true);
+        if (element.getAttributes().kind() == Attributes::File &&
+            element.getAttributes().fileSize() > 0) {
+            std::string basename = element.getBaseName();
+            uint32_t crc = calcCrc(element);
+            cout << "CRC " << std::hex << std::setfill('0') << std::setw(8) << crc
+                 << " sz " << std::dec << element.getAttributes().fileSize()
+                 << " " << element.getPath() << endl;
+        }
+        return true;
+    }, true);
+
     //cout << "scanned " << numFiles << " files." << endl;
     return 0;
 }

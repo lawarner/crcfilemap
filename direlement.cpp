@@ -6,6 +6,15 @@
 using std::string;
 
 
+static string getLastComponent(const string& path) {
+    auto ii = path.rfind('/');
+    if (ii == string::npos) {
+        return path;
+    }
+    return path.substr(ii + 1);
+}
+
+
 DirElement::DirElement(const std::string& fullPath)
     : fullPath_(fullPath)
     , attributesFilled_(false)
@@ -13,12 +22,19 @@ DirElement::DirElement(const std::string& fullPath)
     if (fullPath_.empty() || fullPath_.front() != '/') {
         fullPath_ = resolveFullPath(fullPath_);
     }
+    baseName_ = getLastComponent(fullPath_);
 }
 
 DirElement::DirElement(const DirElement& root, const std::string& relativePath)
-    : fullPath_(root.getPath() + "/" + relativePath)
+    : fullPath_(root.getPath() + "/")
     , attributesFilled_(false)
     , attributes_() {
+    if (0 == relativePath.find("./")) {
+        fullPath_ += relativePath.substr(2);
+    } else {
+        fullPath_ += relativePath;
+    }
+    baseName_ = getLastComponent(fullPath_);
 }
 
 const Attributes& DirElement::getAttributes() {
@@ -26,6 +42,10 @@ const Attributes& DirElement::getAttributes() {
         attributesFilled_ = attributes_.fill(fullPath_);
     }
     return attributes_;
+}
+
+const std::string& DirElement::getBaseName() const {
+    return baseName_;
 }
 
 const std::string& DirElement::getPath() const {
@@ -51,6 +71,9 @@ std::string DirElement::resolveFullPath(const std::string& path) {
         retval = path;
     }
     //TODO clean up path from ./ and ../
+    if (0 == retval.find("./")) {
+        return retval.substr(2);
+    }
     return retval;
 }
 

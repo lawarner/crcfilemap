@@ -12,10 +12,12 @@ public:
 
     // Lazy get of attributes (thus not const)
     const Attributes& getAttributes();
+    const std::string& getBaseName() const;
     const std::string& getPath() const;    
     std::string resolveFullPath(const std::string& path);
 private:
     std::string fullPath_;
+    std::string baseName_;
     bool attributesFilled_;
     Attributes attributes_;
 };

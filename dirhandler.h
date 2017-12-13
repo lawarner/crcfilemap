@@ -1,6 +1,7 @@
 #pragma once
 
 #include "direlement.h"
+#include "matcher.h"
 #include <functional>
 #include <vector>
 
@@ -19,4 +20,5 @@ public:
 private:
     DirElement root_;
     DirElements elements_;
+    Matcher matcher_;
 };
